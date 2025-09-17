@@ -139,20 +139,6 @@
       { id:7, nombre:'BD Relacional', tipo:'BD (Relacional/NoSQL)', uso:'Alto rendimiento', ejemplos:'PostgreSQL/MySQL', latencia:'Baja', rendimiento:'Alto', durabilidad:'Alta (ACID)', escalabilidad:'Media', coste:'Variable', desc:'Filas/columnas y transacciones ACID.' },
       { id:8, nombre:'NoSQL Clave-Valor', tipo:'BD (Relacional/NoSQL)', uso:'Latencia muy baja', ejemplos:'Redis/DynamoDB', latencia:'Muy baja', rendimiento:'Muy alto', durabilidad:'Media/Alta', escalabilidad:'Alta', coste:'Variable', desc:'Acceso por clave para cachés/sesiones.' },
       { id:9, nombre:'Cinta/Archivado', tipo:'Archivo/Copia', uso:'Backups/Archivado', ejemplos:'LTO', latencia:'Muy alta', rendimiento:'Medio (secuencial)', durabilidad:'Muy alta', escalabilidad:'Alta', coste:'Muy bajo/GB', desc:'Retención a largo plazo y cumplimiento.' },
-      { id:10, nombre:'Data Warehouse en nube', tipo:'Data Warehouse/Lake', uso:'Analítica/BI',
-  ejemplos:[{label:'Google BigQuery',url:'https://cloud.google.com/bigquery'},
-            {label:'Snowflake',url:'https://www.snowflake.com/'},
-            {label:'Amazon Redshift',url:'https://aws.amazon.com/redshift/'}],
-  latencia:'Media', rendimiento:'Alto', durabilidad:'Muy alta', escalabilidad:'Muy alta', coste:'Por consulta/almacenamiento',
-  desc:'Plataformas analíticas en la nube para consultas masivas.' },
-
-{ id:11, nombre:'Almacenamiento distribuido', tipo:'Distribuido', uso:'Capacidad masiva',
-  ejemplos:[{label:'HDFS',url:'https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html'},
-            {label:'Ceph',url:'https://ceph.io/'},
-            {label:'GlusterFS',url:'https://www.gluster.org/'}],
-  latencia:'Media', rendimiento:'Escalable', durabilidad:'Alta', escalabilidad:'Muy alta', coste:'Variable (infra propia)',
-  desc:'Sistemas distribuidos de ficheros para clusters y big data.' },
-
     ];
 
     const glosario = [
