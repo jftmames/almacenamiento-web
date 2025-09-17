@@ -1,0 +1,345 @@
+# Web didáctica: Tipos de almacenamiento de datos (lista para Vercel)
+
+**Objetivo**: web estática, sencilla y clara, para que los alumnos comprendan los tipos de almacenamiento tradicionales y modernos, sus características y ejemplos. Incluye filtro, tabla comparativa, glosario y mini‑quiz. Lista para subir a GitHub y desplegar en Vercel.
+
+---
+
+## Estructura del proyecto
+
+```
+almacenamiento-web/
+├─ index.html
+├─ /assets/
+│  └─ (opcional) imágenes o SVGs
+└─ README.md
+```
+
+---
+
+## index.html (copiar/pegar tal cual)
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tipos de Almacenamiento de Datos</title>
+    <meta name="description" content="Web didáctica para comprender tipos de almacenamiento, características y ejemplos." />
+    <!-- Tailwind via CDN para maquetación rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Detalles sutiles para tarjetas y tabla */
+      .card { border-radius: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+      .tag { font-size: .75rem; padding: .15rem .5rem; border-radius: 999px; background: #eef2ff; }
+      .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: .75rem; background:#f1f5f9; padding:.1rem .4rem; border-radius:.25rem }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <header class="max-w-5xl mx-auto px-4 py-10">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Tipos de Almacenamiento de Datos</h1>
+      <p class="mt-2 text-slate-600">Mapa práctico: memoria, discos, redes, nube y bases de datos. Filtra, compara y pon a prueba tu comprensión.</p>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 pb-24 space-y-12">
+      <!-- Filtro y búsqueda -->
+      <section class="card bg-white p-6">
+        <h2 class="text-xl font-semibold">Explora por categoría</h2>
+        <div class="mt-4 grid gap-3 md:grid-cols-3">
+          <label class="block">
+            <span class="text-sm text-slate-600">Buscar</span>
+            <input id="q" type="text" placeholder="ej. SSD, objeto, NAS…" class="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500" />
+          </label>
+          <label class="block">
+            <span class="text-sm text-slate-600">Tipo</span>
+            <select id="tipo" class="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-indigo-500">
+              <option value="">Todos</option>
+              <option>Memoria</option>
+              <option>Disco</option>
+              <option>Red/NAS-SAN</option>
+              <option>Nube (Objeto/Bloque/Fichero)</option>
+              <option>BD (Relacional/NoSQL)</option>
+              <option>Data Warehouse/Lake</option>
+              <option>Distribuido</option>
+              <option>Archivo/Copia</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-sm text-slate-600">Uso típico</span>
+            <select id="uso" class="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 focus:ring-2 focus:ring-indigo-500">
+              <option value="">Todos</option>
+              <option>Latencia muy baja</option>
+              <option>Alto rendimiento</option>
+              <option>Capacidad masiva</option>
+              <option>Alta durabilidad</option>
+              <option>Analítica/BI</option>
+              <option>Backups/Archivado</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <!-- Tarjetas de tipos -->
+      <section class="space-y-6" id="cards"></section>
+
+      <!-- Tabla comparativa -->
+      <section class="card bg-white p-6">
+        <h2 class="text-xl font-semibold mb-4">Tabla comparativa (visión rápida)</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead class="bg-slate-100">
+              <tr>
+                <th class="text-left p-3">Tipo</th>
+                <th class="text-left p-3">Ejemplos</th>
+                <th class="text-left p-3">Latencia</th>
+                <th class="text-left p-3">Rendimiento</th>
+                <th class="text-left p-3">Durabilidad</th>
+                <th class="text-left p-3">Escalabilidad</th>
+                <th class="text-left p-3">Coste aprox.</th>
+              </tr>
+            </thead>
+            <tbody id="tabla" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-xs text-slate-500">Notas: rangos relativos orientativos; dependen de fabricante, configuración, red y SLA.</p>
+      </section>
+
+      <!-- Glosario -->
+      <section class="card bg-white p-6">
+        <h2 class="text-xl font-semibold">Glosario mínimo</h2>
+        <ul class="mt-3 grid md:grid-cols-2 gap-2 text-sm" id="glosario"></ul>
+      </section>
+
+      <!-- Mini‑quiz -->
+      <section class="card bg-white p-6">
+        <h2 class="text-xl font-semibold">Quiz rápido</h2>
+        <ol id="quiz" class="list-decimal list-inside space-y-4 mt-3 text-sm"></ol>
+        <button id="corregir" class="mt-4 rounded-lg bg-indigo-600 text-white px-4 py-2">Corregir</button>
+        <p id="resultado" class="mt-2 text-sm font-medium"></p>
+      </section>
+    </main>
+
+    <footer class="border-t bg-white">
+      <div class="max-w-5xl mx-auto px-4 py-6 text-xs text-slate-500">
+        Hecho con HTML+Tailwind. Repositorio educativo.
+        <span class="ml-1">Consejo: abre el código, léelo y haz un fork con tus mejoras.</span>
+      </div>
+    </footer>
+
+    <script>
+      // --- Datos base ---
+      const items = [
+        { id: 1, nombre: 'Memoria RAM', tipo: 'Memoria', uso: 'Latencia muy baja', ejemplos: 'DDR4/DDR5', latencia: 'Muy baja', rendimiento: 'Muy alto', durabilidad: 'Volátil', escalabilidad: 'Limitada', coste: 'Alto/GB', desc: 'Memoria principal volátil: velocidad para procesos activos.' },
+        { id: 2, nombre: 'Caché (CPU/L3)', tipo: 'Memoria', uso: 'Latencia muy baja', ejemplos: 'L1/L2/L3', latencia: 'Ultra baja', rendimiento: 'Máximo', durabilidad: 'Volátil', escalabilidad: 'Muy limitada', coste: 'Muy alto/GB', desc: 'Memoria muy cercana a CPU para datos inmediatos.' },
+        { id: 3, nombre: 'SSD SATA', tipo: 'Disco', uso: 'Alto rendimiento', ejemplos: 'SATA SSD', latencia: 'Baja', rendimiento: 'Alto', durabilidad: 'Alta', escalabilidad: 'Media', coste: 'Medio', desc: 'Almacenamiento de estado sólido; mejor que HDD en IOPS.' },
+        { id: 4, nombre: 'SSD NVMe', tipo: 'Disco', uso: 'Alto rendimiento', ejemplos: 'PCIe NVMe', latencia: 'Muy baja', rendimiento: 'Muy alto', durabilidad: 'Alta', escalabilidad: 'Media', coste: 'Medio/Alto', desc: 'Interfaz NVMe reduce latencias y aumenta paralelismo.' },
+        { id: 5, nombre: 'HDD', tipo: 'Disco', uso: 'Capacidad masiva', ejemplos: '7200 RPM', latencia: 'Alta', rendimiento: 'Bajo/Medio', durabilidad: 'Media', escalabilidad: 'Alta', coste: 'Bajo/GB', desc: 'Magnético, bueno para capacidad masiva y costes contenidos.' },
+        { id: 6, nombre: 'NAS (Red)', tipo: 'Red/NAS-SAN', uso: 'Capacidad masiva', ejemplos: 'NFS/SMB', latencia: 'Media', rendimiento: 'Medio', durabilidad: 'Alta (RAID)', escalabilidad: 'Media/Alta', coste: 'Medio', desc: 'Almacenamiento en red a nivel de ficheros para equipos.' },
+        { id: 7, nombre: 'SAN (Bloque)', tipo: 'Red/NAS-SAN', uso: 'Alto rendimiento', ejemplos: 'iSCSI/FC', latencia: 'Baja', rendimiento: 'Alto', durabilidad: 'Alta', escalabilidad: 'Alta', coste: 'Alto', desc: 'Red de área de almacenamiento a nivel de bloque para entornos críticos.' },
+        { id: 8, nombre: 'Objeto en nube', tipo: 'Nube (Objeto/Bloque/Fichero)', uso: 'Alta durabilidad', ejemplos: 'S3, Azure Blob, GCS', latencia: 'Media/Alta', rendimiento: 'Variable', durabilidad: 'Muy alta (11x9s)', escalabilidad: 'Muy alta', coste: 'Bajo/GB + egress', desc: 'Ideal para datos estáticos, copias, data lakes.' },
+        { id: 9, nombre: 'Bloque en nube', tipo: 'Nube (Objeto/Bloque/Fichero)', uso: 'Alto rendimiento', ejemplos: 'EBS, Azure Disk', latencia: 'Baja', rendimiento: 'Alto', durabilidad: 'Alta', escalabilidad: 'Alta', coste: 'Medio/Alto', desc: 'Discos virtuales para máquinas; buen rendimiento y gestión.' },
+        { id: 10, nombre: 'Fichero en nube', tipo: 'Nube (Objeto/Bloque/Fichero)', uso: 'Capacidad masiva', ejemplos: 'EFS, Azure Files', latencia: 'Media', rendimiento: 'Medio', durabilidad: 'Alta', escalabilidad: 'Alta', coste: 'Medio', desc: 'Servicios compartidos a nivel fichero para múltiples clientes.' },
+        { id: 11, nombre: 'BD Relacional', tipo: 'BD (Relacional/NoSQL)', uso: 'Alto rendimiento', ejemplos: 'PostgreSQL, MySQL', latencia: 'Baja', rendimiento: 'Alto', durabilidad: 'Alta (ACID)', escalabilidad: 'Media', coste: 'Variable', desc: 'Filas/columnas, transacciones ACID, esquema rígido.' },
+        { id: 12, nombre: 'NoSQL Documento', tipo: 'BD (Relacional/NoSQL)', uso: 'Escalabilidad', ejemplos: 'MongoDB, CouchDB', latencia: 'Baja/Media', rendimiento: 'Alto', durabilidad: 'Alta', escalabilidad: 'Alta', coste: 'Variable', desc: 'Documentos flexibles, buena escalabilidad horizontal.' },
+        { id: 13, nombre: 'NoSQL Clave‑Valor', tipo: 'BD (Relacional/NoSQL)', uso: 'Latencia muy baja', ejemplos: 'Redis, DynamoDB', latencia: 'Muy baja', rendimiento: 'Muy alto', durabilidad: 'Media/Alta', escalabilidad: 'Alta', coste: 'Variable', desc: 'Acceso por clave, ideal para cachés y sesiones.' },
+        { id: 14, nombre: 'NoSQL Columnar', tipo: 'BD (Relacional/NoSQL)', uso: 'Escalabilidad', ejemplos: 'Cassandra, HBase', latencia: 'Media', rendimiento: 'Alto (lect. agregadas)', durabilidad: 'Alta', escalabilidad: 'Muy alta', coste: 'Bajo/Node', desc: 'Column‑family, escalable para ingesta y lecturas distribuidas.' },
+        { id: 15, nombre: 'Data Warehouse', tipo: 'Data Warehouse/Lake', uso: 'Analítica/BI', ejemplos: 'BigQuery, Snowflake, Redshift', latencia: 'No crítico', rendimiento: 'Alto (analítico)', durabilidad: 'Muy alta', escalabilidad: 'Muy alta', coste: 'Pago por uso', desc: 'Analítica estructurada, SQL, separación cómputo/almacenamiento.' },
+        { id: 16, nombre: 'Data Lake/Lakehouse', tipo: 'Data Warehouse/Lake', uso: 'Analítica/BI', ejemplos: 'S3+Spark+Delta', latencia: 'No crítico', rendimiento: 'Alto (batch/ML)', durabilidad: 'Muy alta', escalabilidad: 'Muy alta', coste: 'Bajo/GB', desc: 'Datos crudos/curados en objeto con formatos tipo Parquet/Delta.' },
+        { id: 17, nombre: 'HDFS/Ceph', tipo: 'Distribuido', uso: 'Capacidad masiva', ejemplos: 'HDFS, Ceph', latencia: 'Media', rendimiento: 'Alto', durabilidad: 'Alta (réplicas/EC)', escalabilidad: 'Muy alta', coste: 'Bajo/GB', desc: 'Sistemas distribuidos con replicación/codificación de borrado.' },
+        { id: 18, nombre: 'Cinta/Archivado', tipo: 'Archivo/Copia', uso: 'Backups/Archivado', ejemplos: 'LTO', latencia: 'Muy alta', rendimiento: 'Medio (secuencial)', durabilidad: 'Muy alta', escalabilidad: 'Alta', coste: 'Muy bajo/GB', desc: 'Para retención a largo plazo y cumplimiento.' },
+      ];
+
+      const glosario = [
+        ['Latencia', 'Tiempo de respuesta entre petición y acceso a datos.'],
+        ['Rendimiento (IOPS/MBps)', 'Operaciones por segundo o ancho de banda sostenido.'],
+        ['Durabilidad', 'Probabilidad de no pérdida de datos a lo largo del tiempo.'],
+        ['Escalabilidad', 'Capacidad de crecer en tamaño o rendimiento.'],
+        ['RAID', 'Conjunto de discos con redundancia o rendimiento combinado.'],
+        ['Objeto/Bloque/Fichero', 'Tres modelos de acceso en almacenamiento (API, bloque bruto, sistema de archivos).'],
+        ['ACID', 'Propiedades de transacción: Atomicidad, Consistencia, Aislamiento, Durabilidad.'],
+        ['CAP', 'Trade‑off Consistency, Availability, Partition Tolerance en sistemas distribuidos.'],
+      ];
+
+      const preguntas = [
+        { q: '¿Qué opción priorizarías para archivar a muy largo plazo con bajo coste?', a: 'Cinta/Archivado' },
+        { q: '¿Qué servicio encaja con un lago de datos sobre objeto en nube?', a: 'Data Lake/Lakehouse' },
+        { q: 'Para caché de sesiones con latencia mínima, ¿qué motor es típico?', a: 'NoSQL Clave‑Valor' },
+      ];
+
+      // --- Render tarjetas ---
+      const cardsEl = document.getElementById('cards');
+      function renderCards(list) {
+        cardsEl.innerHTML = '';
+        list.forEach(it => {
+          const el = document.createElement('article');
+          el.className = 'card bg-white p-5 flex flex-col gap-2';
+          el.innerHTML = `
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">${it.nombre}</h3>
+              <span class="tag">${it.tipo}</span>
+            </div>
+            <p class="text-sm text-slate-600">${it.desc}</p>
+            <div class="text-xs text-slate-600 grid md:grid-cols-3 gap-2">
+              <div><span class="font-medium">Uso:</span> ${it.uso}</div>
+              <div><span class="font-medium">Ejemplos:</span> ${it.ejemplos}</div>
+              <div><span class="font-medium">Latencia:</span> ${it.latencia}</div>
+              <div><span class="font-medium">Rendimiento:</span> ${it.rendimiento}</div>
+              <div><span class="font-medium">Durabilidad:</span> ${it.durabilidad}</div>
+              <div><span class="font-medium">Escalabilidad:</span> ${it.escalabilidad}</div>
+              <div><span class="font-medium">Coste:</span> ${it.coste}</div>
+            </div>
+          `;
+          cardsEl.appendChild(el);
+        });
+      }
+
+      // --- Render tabla ---
+      const tablaEl = document.getElementById('tabla');
+      function renderTabla(list) {
+        tablaEl.innerHTML = list.map(it => `
+          <tr>
+            <td class="p-3">${it.nombre}</td>
+            <td class="p-3">${it.ejemplos}</td>
+            <td class="p-3">${it.latencia}</td>
+            <td class="p-3">${it.rendimiento}</td>
+            <td class="p-3">${it.durabilidad}</td>
+            <td class="p-3">${it.escalabilidad}</td>
+            <td class="p-3">${it.coste}</td>
+          </tr>
+        `).join('');
+      }
+
+      // --- Glosario ---
+      const glosarioEl = document.getElementById('glosario');
+      glosario.forEach(([k,v]) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="font-medium">${k}:</span> ${v}`;
+        glosarioEl.appendChild(li);
+      });
+
+      // --- Quiz ---
+      const quizEl = document.getElementById('quiz');
+      preguntas.forEach((p, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="mt-1">${p.q}</div>
+          <input class="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2" placeholder="Tu respuesta" data-i="${i}" />
+        `;
+        quizEl.appendChild(li);
+      });
+
+      document.getElementById('corregir').addEventListener('click', () => {
+        const inputs = [...quizEl.querySelectorAll('input')];
+        let aciertos = 0;
+        inputs.forEach((inp, i) => {
+          const ok = preguntas[i].a.toLowerCase();
+          if (inp.value.trim().toLowerCase().includes(ok)) aciertos++;
+        });
+        const res = document.getElementById('resultado');
+        res.textContent = `Resultado: ${aciertos}/${preguntas.length}`;
+        res.className = 'mt-2 text-sm font-medium ' + (aciertos === preguntas.length ? 'text-green-700' : 'text-slate-700');
+      });
+
+      // --- Filtro ---
+      function applyFilter() {
+        const q = document.getElementById('q').value.toLowerCase();
+        const t = document.getElementById('tipo').value;
+        const u = document.getElementById('uso').value;
+        const filtered = items.filter(it => (
+          (!t || it.tipo === t) && (!u || it.uso === u) && (
+            it.nombre.toLowerCase().includes(q) || it.ejemplos.toLowerCase().includes(q) || it.desc.toLowerCase().includes(q)
+          )
+        ));
+        renderCards(filtered);
+        renderTabla(filtered);
+      }
+      ['q','tipo','uso'].forEach(id => document.getElementById(id).addEventListener('input', applyFilter));
+
+      // Inicial
+      renderCards(items);
+      renderTabla(items);
+    </script>
+  </body>
+</html>
+```
+
+---
+
+## README.md (copiar/pegar)
+
+```md
+# Tipos de Almacenamiento de Datos — Web educativa
+
+Web estática con HTML+Tailwind (CDN), sin build. Se despliega en Vercel o GitHub Pages.
+
+## 1) Subir a GitHub
+1. Crea un repo público llamado `almacenamiento-web`.
+2. Sube `index.html` (y `/assets` si usas imágenes).
+3. Verifica que el archivo esté en la raíz del repo.
+
+## 2) Desplegar en Vercel
+1. Entra en https://vercel.com/new y conecta tu cuenta con GitHub.
+2. Elige el repo `almacenamiento-web`.
+3. Vercel detectará sitio estático. Pulsa **Deploy**.
+4. Obtendrás una URL `https://…vercel.app/`. Compártela.
+
+> Alternativa: GitHub Pages (Settings → Pages → Deploy from a branch → `main` / root).
+
+## 3) Personalización
+- Edita `items[]` en el `<script>` para añadir/eliminar tipos.
+- Cambia colores/estilos con Tailwind (clases utilitarias).
+- Amplía el quiz en `preguntas[]`.
+
+## 4) Licencia
+Uso docente.
+```
+
+---
+
+## Prompts listos para alumnos (copiar/pegar en la IA)
+
+> **Nota**: cada alumno debe adaptar nombres, ejemplos y descripciones a su propio enfoque.
+
+### Prompt 1 — Crear el repositorio y guía mínima
+
+> *Actúa como tutor técnico. Quiero crear una web estática educativa sobre tipos de almacenamiento de datos. Dame pasos exactos para: (1) crear un repo público en GitHub llamado `almacenamiento-web`, (2) añadir un `index.html` base con Tailwind vía CDN y secciones: filtro, tarjetas, tabla, glosario y quiz, (3) subirlo desde la web de GitHub sin usar terminal, (4) preparar README con instrucciones de despliegue en Vercel. Evita prerequisitos locales.*
+
+### Prompt 2 — Generar el `index.html` personalizado
+
+> *Genera un `index.html` accesible y responsive que incluya: buscador y filtros, tarjetas por tipo (Memoria, Disco, NAS/SAN, Nube Objeto/Bloque/Fichero, BD Relacional y NoSQL, Data Warehouse/Lake, Distribuido, Archivo/Copia), tabla comparativa con latencia/rendimiento/durabilidad/escalabilidad/coste, glosario breve y un mini‑quiz con 3‑5 preguntas. Usa HTML + Tailwind (CDN) y JavaScript puro sin build. Incluye datos de ejemplo y comentarios en el código para entender la estructura.*
+
+### Prompt 3 — Desplegar en Vercel
+
+> *Explícame cómo conectar mi GitHub a Vercel y desplegar un sitio estático (solo `index.html` en la raíz), cómo ver logs de deployment y cómo configurar un dominio personalizado. Evita pasos de CLI; todo con interfaz web.*
+
+### Prompt 4 — Mejoras opcionales
+
+> *Proponme 5 mejoras didácticas: (1) modo contraste alto, (2) selector de idioma ES/EN, (3) exportar a CSV la tabla filtrada, (4) añadir ejemplos reales con enlaces, (5) cuestionario autocorregible con feedback por pregunta. Dame el código necesario y explica dónde pegarlo.*
+
+### Prompt 5 — Rúbrica de evaluación
+
+> *Genera una rúbrica (0–10) para evaluar mi web: contenido (exactitud, cobertura), claridad visual, accesibilidad, interactividad (filtros y quiz), y documentación (README). Incluye descriptores por nivel.*
+
+---
+
+## Opción avanzada (Next.js en Vercel) — solo si el profesor lo pide
+
+* **Estructura mínima** con App Router y Tailwind: rutas `/`, `/glosario`, `/quiz`.
+* **Datos** en `data/items.ts` y `data/glossary.ts`.
+* **Despliegue**: Vercel detecta Next.js automáticamente.
+
+### Prompt A — Generar esqueleto Next.js + Tailwind
+
+> *Quiero un proyecto Next.js (App Router) con Tailwind. Páginas: Home (filtros + tarjetas + tabla), Glosario, Quiz. Datos en ficheros TS dentro de `/data`. Instrucciones para crear repo en GitHub (web), cómo subir carpetas y archivos, y cómo desplegar en Vercel sin usar CLI. Incluye componentes limpios y accesibles.*
+
+### Prompt B — Accesibilidad y i18n
+
+> *Añade buenas prácticas de accesibilidad (landmarks, aria‑labels, foco visible) e i18n simple (ES/EN) con diccionarios. Indica cambios de código y rutas afectadas.*
+
+---
+
+## Sugerencias para la sesión
+
+* Empezar con la **versión estática** (15–30 min) y desplegar.
+* Cada equipo personaliza **3 elementos**: (1) añadir 2 tipos nuevos, (2) ampliar glosario, (3) escribir 3 preguntas propias.
+* Cerrar con demo de **Vercel** y enlace compartido en el campus.
