@@ -10,6 +10,31 @@
   <style>
     .card { border-radius: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
     .tag { font-size: .75rem; padding: .15rem .5rem; border-radius: 999px; background: #eef2ff; }
+    <style>
+  /* ...tu CSS existente... */
+
+  /* Variables base (normales) */
+  :root{
+    --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#475569; --ring:#4f46e5;
+    --thead:#e2e8f0; --shadow:0 8px 24px rgba(0,0,0,.08);
+  }
+
+  /* Modo alto contraste */
+  .hc{
+    --bg:#000; --card:#000; --text:#fff; --muted:#d1d5db; --ring:#22d3ee;
+    --thead:#111827; --shadow:0 0 0 2px #fff;
+  }
+
+  body{ background:var(--bg); color:var(--text); }
+  .card{ background:var(--card); box-shadow:var(--shadow); }
+  .tag{ background:#0ea5e9; color:#001014; }
+  table thead{ background:var(--thead); }
+  input, select{
+    background:var(--card); color:var(--text); border-color:#334155;
+  }
+  input:focus, select:focus{ outline:none; box-shadow:0 0 0 3px var(--ring); }
+</style>
+
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
